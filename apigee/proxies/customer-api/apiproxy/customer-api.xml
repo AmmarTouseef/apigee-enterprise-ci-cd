@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<APIProxy revision="1" name="customer-api">
+  <DisplayName/>
+  <Description/>
+  <CreatedAt>1790067836766</CreatedAt>
+  <LastModifiedAt>1790068838217</LastModifiedAt>
+  <BasePaths>/customer-api</BasePaths>
+  <ProxyEndpoints>
+    <ProxyEndpoint>default</ProxyEndpoint>
+  </ProxyEndpoints>
+  <TargetEndpoints>
+    <TargetEndpoint>default</TargetEndpoint>
+  </TargetEndpoints>
+  <Policies>
+    <Policy>OAuth-VerifyAccessToken</Policy>
+    <Policy>AM-RequestLogging</Policy>
+    <Policy>AM-ResponseHeaders</Policy>
+    <Policy>RF-BackendError</Policy>
+  </Policies>
+</APIProxy>

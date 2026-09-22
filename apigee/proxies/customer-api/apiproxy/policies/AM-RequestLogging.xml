@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<AssignMessage name="AM-RequestLogging">
+  <DisplayName>AM-RequestLogging</DisplayName>
+  <AssignTo createNew="false" transport="http" type="request"/>
+  <Set>
+    <Headers>
+      <Header name="X-API-Request">true</Header>
+    </Headers>
+  </Set>
+  <IgnoreUnresolvedVariables>true</IgnoreUnresolvedVariables>
+</AssignMessage>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<RaiseFault name="RF-BackendError">
+  <DisplayName>RF-BackendError</DisplayName>
+  <FaultResponse>
+    <Set>
+      <StatusCode>502</StatusCode>
+      <ReasonPhrase>Bad Gateway</ReasonPhrase>
+      <Headers>
+        <Header name="Content-Type">application/json</Header>
+      </Headers>
+      <Payload contentType="application/json">
+                {
+                    "error": {
+                        "code": "BACKEND_ERROR",
+                        "message": "Unable to process request because the backend service is unavailable."
+                    }
+                }
+            </Payload>
+    </Set>
+  </FaultResponse>
+  <IgnoreUnresolvedVariables>true</IgnoreUnresolvedVariables>
+</RaiseFault>
