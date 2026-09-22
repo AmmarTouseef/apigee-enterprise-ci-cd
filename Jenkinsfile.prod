@@ -1,0 +1,72 @@
+pipeline {
+    agent any
+
+    parameters {
+        string(
+            name: 'RELEASE_TAG',
+            defaultValue: '',
+            description: 'Approved Git release tag to deploy'
+        )
+
+        string(
+            name: 'API_PROXY',
+            defaultValue: 'customer-api',
+            description: 'Apigee API proxy to deploy'
+        )
+
+        string(
+            name: 'CHANGE_ID',
+            defaultValue: '',
+            description: 'Approved change/request ID'
+        )
+    }
+
+    environment {
+        APIGEE_ENV = 'prod'
+        APIGEE_ORG = 'maaz160921-org'
+        GCP_PROJECT = 'project-acc4ef1d-341b-4621-986'
+    }
+
+    stages {
+
+        stage('Checkout Approved Release') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Validate Repository') {
+            steps {
+                sh 'bash scripts/validate-repo.sh'
+            }
+        }
+
+        stage('Validate Apigee Bundles') {
+            steps {
+                sh 'bash scripts/validate-apigee-bundles.sh'
+            }
+        }
+
+        stage('Deploy API Proxy') {
+            steps {
+                sh """
+                    bash scripts/deploy-proxy.sh \
+                    ${params.API_PROXY} \
+                    ${APIGEE_ORG} \
+                    ${APIGEE_ENV}
+                """
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                sh """
+                    bash scripts/verify-deployment.sh \
+                    ${params.API_PROXY} \
+                    ${APIGEE_ORG} \
+                    ${APIGEE_ENV}
+                """
+            }
+        }
+    }
+}
