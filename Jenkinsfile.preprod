@@ -1,0 +1,132 @@
+pipeline {
+    agent any
+
+    parameters {
+        string(
+            name: 'GIT_REF',
+            defaultValue: 'main',
+            description: 'Git branch, tag, or commit to deploy'
+        )
+
+        string(
+            name: 'API_PROXY',
+            defaultValue: 'customer-api',
+            description: 'Apigee API proxy to deploy'
+        )
+
+        booleanParam(
+            name: 'DEPLOY_SHARED_FLOW',
+            defaultValue: true,
+            description: 'Deploy the IAM authorization shared flow'
+        )
+
+        booleanParam(
+            name: 'DEPLOY_KVM',
+            defaultValue: false,
+            description: 'Deploy KVM configuration'
+        )
+
+        booleanParam(
+            name: 'DEPLOY_TARGET_SERVER',
+            defaultValue: false,
+            description: 'Deploy Target Server configuration'
+        )
+    }
+
+    environment {
+        APIGEE_ENV = 'eval'
+        APIGEE_ORG = 'maaz160921-org'
+        GCP_PROJECT = 'project-acc4ef1d-341b-4621-986'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Validate Repository') {
+            steps {
+                sh 'bash scripts/validate-repo.sh'
+            }
+        }
+
+        stage('Validate Apigee Bundles') {
+            steps {
+                sh 'bash scripts/validate-apigee-bundles.sh'
+            }
+        }
+
+        stage('Deploy Target Server') {
+            when {
+                expression {
+                    params.DEPLOY_TARGET_SERVER
+                }
+            }
+            steps {
+                sh """
+                    bash scripts/deploy-targetserver.sh \
+                    apigee/targetservers/preprod \
+                    ${APIGEE_ORG} \
+                    ${APIGEE_ENV}
+                """
+            }
+        }
+
+        stage('Deploy KVM') {
+            when {
+                expression {
+                    params.DEPLOY_KVM
+                }
+            }
+            steps {
+                sh """
+                    bash scripts/deploy-kvm.sh \
+                    apigee/kvms/preprod \
+                    ${APIGEE_ORG} \
+                    ${APIGEE_ENV}
+                """
+            }
+        }
+
+        stage('Deploy Shared Flow') {
+            when {
+                expression {
+                    params.DEPLOY_SHARED_FLOW
+                }
+            }
+            steps {
+                sh """
+                    bash scripts/deploy-sharedflow.sh \
+                    SF-IAM-AUTHORIZATION \
+                    ${APIGEE_ORG} \
+                    ${APIGEE_ENV}
+                """
+            }
+        }
+
+        stage('Deploy API Proxy') {
+            steps {
+                sh """
+                    bash scripts/deploy-proxy.sh \
+                    ${params.API_PROXY} \
+                    ${APIGEE_ORG} \
+                    ${APIGEE_ENV}
+                """
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                sh """
+                    bash scripts/verify-deployment.sh \
+                    ${params.API_PROXY} \
+                    ${APIGEE_ORG} \
+                    ${APIGEE_ENV}
+                """
+            }
+        }
+    }
+}
