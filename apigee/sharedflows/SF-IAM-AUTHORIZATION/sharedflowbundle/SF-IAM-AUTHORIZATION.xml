@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SharedFlowBundle revision="1" name="SF-IAM-AUTHORIZATION">
+  <DisplayName/>
+  <Description/>
+  <CreatedAt>1790070200019</CreatedAt>
+  <LastModifiedAt>1790070200019</LastModifiedAt>
+  <SharedFlows>
+    <SharedFlow>default</SharedFlow>
+  </SharedFlows>
+  <subType>SharedFlow</subType>
+</SharedFlowBundle>
