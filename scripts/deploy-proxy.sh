@@ -1,18 +1,29 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
-PROXY_NAME="$1"
-APIGEE_ORG="$2"
-APIGEE_ENV="$3"
+PROXY_NAME="${1:?Proxy name is required}"
+PROXY_ARTIFACT="${2:?Proxy artifact is required}"
+APIGEE_ORG="${3:?Apigee organization is required}"
+APIGEE_ENV="${4:?Apigee environment is required}"
 
-if [ -z "$PROXY_NAME" ] || [ -z "$APIGEE_ORG" ] || [ -z "$APIGEE_ENV" ]; then
-    echo "Usage: ./deploy-proxy.sh <proxy-name> <org> <environment>"
+echo "=== APIGEE PROXY DEPLOYMENT ==="
+echo "Proxy       : ${PROXY_NAME}"
+echo "Artifact    : ${PROXY_ARTIFACT}"
+echo "Organization: ${APIGEE_ORG}"
+echo "Environment : ${APIGEE_ENV}"
+
+if [ ! -f "${PROXY_ARTIFACT}" ]; then
+    echo "ERROR: Proxy artifact not found: ${PROXY_ARTIFACT}"
     exit 1
 fi
 
-echo "Deploying proxy: $PROXY_NAME"
-echo "Organization: $APIGEE_ORG"
-echo "Environment: $APIGEE_ENV"
+echo "Deploying proxy..."
 
-echo "Proxy deployment step will be executed by Jenkins."
+gcloud apigee apis deploy "${PROXY_NAME}" \
+    --organization="${APIGEE_ORG}" \
+    --environment="${APIGEE_ENV}" \
+    --source="${PROXY_ARTIFACT}" \
+    --override
+
+echo "Proxy deployment completed successfully."
