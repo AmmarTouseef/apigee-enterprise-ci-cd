@@ -107,11 +107,22 @@ pipeline {
             }
         }
 
+        stage('Package API Proxy') {
+            steps {
+                sh """
+                    bash scripts/package-proxy.sh \
+                    ${params.API_PROXY} \
+                    apigee/proxies/${params.API_PROXY}/apiproxy
+                """
+            }
+        }
+
         stage('Deploy API Proxy') {
             steps {
                 sh """
                     bash scripts/deploy-proxy.sh \
                     ${params.API_PROXY} \
+                    artifacts/${params.API_PROXY}.zip \
                     ${APIGEE_ORG} \
                     ${APIGEE_ENV}
                 """
