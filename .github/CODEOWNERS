@@ -1,0 +1,21 @@
+# Default owner for the demo repository
+* @AmmarTouseef
+
+# Apigee artifacts
+/apigee/ @AmmarTouseef
+
+# Apigee security policies
+/apigee/proxies/*/apiproxy/policies/ @AmmarTouseef
+
+# Shared flows
+/apigee/sharedflows/ @AmmarTouseef
+
+# Target servers
+/apigee/targetservers/ @AmmarTouseef
+
+# Production KVM configuration
+/apigee/kvms/prod/ @AmmarTouseef
+
+# CI/CD configuration
+/Jenkinsfile* @AmmarTouseef
+/scripts/ @AmmarTouseef
