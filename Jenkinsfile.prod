@@ -10,7 +10,7 @@ pipeline {
 
         string(
             name: 'API_PROXY',
-            defaultValue: 'customer-api',
+            defaultValue: 'test-cicd',
             description: 'Apigee API proxy to deploy'
         )
 
